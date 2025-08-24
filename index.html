@@ -648,13 +648,35 @@ document.write("</div>");
 <div class='row' id='show'>
 </div>
 <div class='blog-pager container' id='blog-pager-1'>
-<a class='blog-pager-older-link btn btn-outline-info' href='' id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>
+<a class='blog-pager-older-link btn btn-outline-info' href='#' id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>
 </div>
 </div>
-<script>
-//<![CDATA[
+
+<script type="text/javascript">
+ $(document).ready(function () {
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+
+var tech = getUrlParameter('start');
+
+if(window.location.href.indexOf("max-results=12&start="+tech+"&by-date=false") > -1) {
+
 $.ajax({
-    url: "https://www.blogger.com/feeds/2186621154024277002/posts/default/-/blacked?max-results=18&alt=json-in-script",
+    url: "https://www.blogger.com/feeds/2186621154024277002/posts/default/-/blacked?max-results=12&start-index="+tech+"&alt=json-in-script",
     type: "get",
     dataType: "jsonp",
     success: function (data) {
@@ -752,7 +774,10 @@ love += "<a class='site-link' href='/vixen>Vixen</a> - <span class='date'>"+towr
 love += "</div>";
 love += "</figcaption>";
 love += "</div>";
-$('.blog-pager-older-link').attr('href','https://vixenplus.blogspot.com/search/label/'+namesite+'?updated-max='+timestamp+'&amp;max-results=33&amp;start=34&amp;by-date=false');
+
+var nextnum = parseInt(tech) + 12;
+
+$('.blog-pager-older-link').attr('href','index.html?updated-max='+timestamp+'&max-results=12&start='+nextnum+'&by-date=false');
 }
 
 $(love).appendTo("#show");
@@ -769,6 +794,133 @@ $(".hover-thumb").hover(
     });
 }
     });
+
+  }else{
+
+$.ajax({
+    url: "https://www.blogger.com/feeds/2186621154024277002/posts/default/-/blacked?max-results=12&alt=json-in-script",
+    type: "get",
+    dataType: "jsonp",
+    success: function (data) {
+var totalposts = data.feed.entry.length;
+var love = "";
+for (var i = 0; i < data.feed.entry.length; i++) {
+var posttitle = data.feed.entry[i].title.$t;
+var postcontent = data.feed.entry[i].content.$t;
+
+var thumburl;try{thumburl=data.feed.entry[i].media$img.url;}catch(error)
+{s=data.feed.entry[i].content.$t;a=s.indexOf("<img");b=s.indexOf("src=\"",a);c=s.indexOf("\"",b+5);d=s.substr(b+5,c-b-5);if((a!=-1)&&(b!=-1)&&(c!=-1)&&(d!="")){thumburl=d;}else thumburl='http://3.bp.blogspot.com/-zP87C2q9yog/UVopoHY30SI/AAAAAAAAE5k/AIyPvrpGLn8/s1600/picture_not_available.png';}
+
+var postdate=data.feed.entry[i].published.$t;var cdyear=postdate.substring(0,4);var cdmonth=postdate.substring(5,7);var cdday=postdate.substring(8,10);var monthnames=new Array();monthnames[1]="Jan";monthnames[2]="Feb";monthnames[3]="Mar";monthnames[4]="Apr";monthnames[5]="May";monthnames[6]="June";monthnames[7]="July";monthnames[8]="Aug";monthnames[9]="Sept";monthnames[10]="Oct";monthnames[11]="Nov";monthnames[12]="Dec";
+
+
+var towrite='';
+
+towrite=towrite+monthnames[parseInt(cdmonth,10)]+' '+cdday+', '+cdyear;
+
+var newdate = cdday+'-'+cdmonth+'-'+cdyear;
+
+var timestamp1=data.feed.entry[i].published.$t.substring(0,19)+data.feed.entry[i].published.$t.substring(23,29);var timestamp=encodeURIComponent(timestamp1);
+
+var summary = data.feed.entry[i].content.$t.replace(/<\/?[^>]+(>|$)/g, "").substr(0, 20000);
+var myString = summary.split("@");
+var setnewurl = myString[0].replace('#', '');
+var newurl = createlinks +'?url='+ setnewurl;
+love += "<div class='content-grid-item col-12 col-sm-6 col-lg-4'>";
+love += "<div class='img-wrapper'>";
+love += "<div class='content-grid-overlay '>";
+love += "<div class='content-grid-overlay-item'>";
+love += "<a href='"+ newurl +"'>";
+love += "<div class='overlay-video-wrapper hover-thumb cover'><video autoplay='' preload='auto' class='thumb-preview' loop='' muted='' playsinline='' src='"+ myString[1] +"' style='opacity: 0; z-index: 0;'/></div>";
+love += "</a>";
+love += "</div>";
+love += "</div>";
+love += "<a href='"+ newurl +"'>";
+love += "<picture>";
+love += "<img alt='"+ posttitle +"' class='lazyload content-grid-image' data-src='data:image/svg+xml,%3Csvg xmlns=&apos;http://www.w3.org/2000/svg&apos; viewBox=&apos;0 0 640 360&apos;%3E%3C/svg%3E' data-srcset='"+ thumburl +"' height='360' sizes='(min-width: 992px) 33vw, (min-width: 576px) 50vw, (min-width: 0px) 100vw' src='data:image/svg+xml,%3Csvg xmlns=&apos;http://www.w3.org/2000/svg&apos; viewBox=&apos;0 0 640 360&apos;%3E%3C/svg%3E' srcset='"+ thumburl +"' style='height:auto;' width='640'/>";
+love += "</picture>";
+love += "</a>";
+love += "</div>";
+love += "<figcaption>";
+love += "<div class='caption-header'>";
+love += "<span class='title'><a href='"+ newurl +"'>"+ posttitle +"</a></span></div>";
+love += "<div class='models'>";
+for (var m = 0; m < data.feed.entry[i].category.length; m++) {
+if(data.feed.entry[i].category[m].term == "blacked" || data.feed.entry[i].category[m].term == "milfy" || data.feed.entry[i].category[m].term == "slayed" || data.feed.entry[i].category[m].term == "deeper" || data.feed.entry[i].category[m].term == "tushyraw" || data.feed.entry[i].category[m].term == "blackedraw" || data.feed.entry[i].category[m].term == "tushy" || data.feed.entry[i].category[m].term == "vixen" || data.feed.entry[i].category[m].term == "vixenplus" || data.feed.entry[i].category[m].term == "wifey"){
+}else{
+var categoryname = data.feed.entry[i].category[m].term.replace('-', ' ').replace('-', ' ').replace('-', ' ');
+love += "<a class='model' href='/"+ data.feed.entry[i].category[m].term +"'>"+categoryname+"</a> ";
+}
+}
+love += "</div>";
+love += "<div class='sites'>";
+for (var m = 0; m < data.feed.entry[i].category.length; m++) {
+
+if(data.feed.entry[i].category[m].term == "blacked"){
+love += "<a class='site-link' href='/blacked'>Blacked</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "wifey"){
+love += "<a class='site-link' href='/wifey'>Wifey</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "milfy"){
+love += "<a class='site-link' href='/milfy'>Milfy</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "slayed"){
+love += "<a class='site-link' href='/slayed'>Slayed</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "deeper"){
+love += "<a class='site-link' href='/deeper'>Deeper</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "tushyraw"){
+love += "<a class='site-link' href='/tushyraw'>TushyRaw</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "blackedraw"){
+love += "<a class='site-link' href='/blackedraw'>BlackedRaw</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "tushy"){
+love += "<a class='site-link' href='/tushy'>Tushy</a> - <span class='date'>"+towrite+"</span>";
+}
+
+if(data.feed.entry[i].category[m].term == "vixen"){
+love += "<a class='site-link' href='/vixen>Vixen</a> - <span class='date'>"+towrite+"</span>";
+}
+
+}
+love += "</div>";
+love += "</figcaption>";
+love += "</div>";
+$('.blog-pager-older-link').attr('href','index.html?updated-max='+timestamp+'&max-results=12&start=13&by-date=false');
+}
+
+$(love).appendTo("#show");
+
+$(".hover-thumb").hover(
+    function() {
+    $(this).children('video').show();
+    $(this).children('video').css('opacity','1');
+      $(this).children("video").get(0).play();
+    }, function() {
+        $(this).children('video').css('z-index','0');
+        $(this).children('video').css('opacity','0');
+       $(this).children("video").get(0).pause();
+    });
+}
+    });
+
+  }
+});
+</script>
+
+<script>
+//<![CDATA[
+
 
 //]]>
 </script>
@@ -863,7 +1015,6 @@ $(".owl-carousel.series").owlCarousel({loop:true,margin:10,lazyLoad:!0,nav:false
 </body>
 
 </html>
-
 
 
 
